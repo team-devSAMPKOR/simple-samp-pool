@@ -3,7 +3,6 @@
 
 #define MAX_POOL 99
 
-
 new POOL_COUNT = 0;
 
 enum POOL_MODEL{
@@ -60,7 +59,7 @@ public OnPlayerConnect(playerid){
 public PHY_OnObjectUpdate(objectid){
 
 	new
-		poolid = 0;
+		poolid = 0; // setup pool table
 	
 	for(new i = 0; i < GetMaxPlayers(); i++){
 		if(	IsInBall(objectid , POOL[poolid][POS][0] + 0.955, POOL[poolid][POS][1] + 0.510, POOL[poolid][POS][2] -0.045,0.10) ||
@@ -74,24 +73,28 @@ public PHY_OnObjectUpdate(objectid){
 		{
 			new
 				str[50];
+
+			for(new j = 0; j < 16; j++){
+
+				if(objectid == POOL[poolid][BALLS][j]){
+
+					new type[6];
+
+					if(POOL[poolid][BALLS][j] > 8) format(type ,sizeof(type), "¶ì");
+					else format(type ,sizeof(type), "»ö");
+					
+					format(str ,sizeof(str), "delete object id : %d¹øº¼ %s°ø", POOL[poolid][BALLS][j], type);
+					SendClientMessage(i, -1, str);
+
+					DestroyObject(POOL[poolid][BALLS][j]);
+					PHY_DeleteObject(POOL[poolid][BALLS][j]);
+				}
 				
-			if(objectid != 1){ // TODO : TEST
-			
-				format(str ,sizeof(str), " delete object : id %d ", objectid);
-				SendClientMessage(i, -1, str);
-				
-				DestroyObject(objectid);
-				PHY_DeleteObject(objectid);
 			}
 
 		}
 		
 	}
-
-	return 1;
-}
-
-public OnPlayerUpdate(playerid){
 
 	return 1;
 }
@@ -108,23 +111,21 @@ stock createPoolTable(playerid){
     	
 	POOL[POOL_COUNT][BALLS][0] = CreateObject(3003, pos[0] + 0.5,   pos[1],         pos[2] -0.045 , 0, 0, 0);
 	POOL[POOL_COUNT][BALLS][1] = CreateObject(3002, pos[0] - 0.3,   pos[1],         pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][2] = CreateObject(3101, pos[0] - 0.375, pos[1] + 0.044, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][3] = CreateObject(2995, pos[0] - 0.375, pos[1] - 0.044, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][4] = CreateObject(2996, pos[0] - 0.450, pos[1] + 0.079, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][5] = CreateObject(3106, pos[0] - 0.450, pos[1],         pos[2] -0.045 , 0, 0, 0);
-
-	POOL[POOL_COUNT][BALLS][6] = CreateObject(3105, pos[0] - 0.450, pos[1] - 0.079, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][7] = CreateObject(3103, pos[0] - 0.525, pos[1] + 0.118, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][8] = CreateObject(3001, pos[0] - 0.525, pos[1] + 0.040, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][9] = CreateObject(3100, pos[0] - 0.525, pos[1] - 0.040, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][10] = CreateObject(2997, pos[0] - 0.525, pos[1] - 0.118, pos[2] -0.045 , 0, 0, 0);
-
-	POOL[POOL_COUNT][BALLS][11] = CreateObject(3000, pos[0] - 0.600, pos[1] + 0.157, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][12] = CreateObject(3102, pos[0] - 0.600, pos[1] + 0.079, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][2] = CreateObject(3100, pos[0] - 0.525, pos[1] - 0.040, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][3] = CreateObject(3101, pos[0] - 0.375, pos[1] + 0.044, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][4] = CreateObject(3102, pos[0] - 0.600, pos[1] + 0.079, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][5] = CreateObject(3103, pos[0] - 0.525, pos[1] + 0.118, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][6] = CreateObject(3104, pos[0] - 0.600, pos[1] - 0.157, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][7] = CreateObject(3105, pos[0] - 0.450, pos[1] - 0.079, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][8] = CreateObject(3106, pos[0] - 0.450, pos[1],         pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][9] = CreateObject(2995, pos[0] - 0.375, pos[1] - 0.044, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][10] = CreateObject(2996, pos[0] - 0.450, pos[1] + 0.079, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][11] = CreateObject(2997, pos[0] - 0.525, pos[1] - 0.118, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][12] = CreateObject(2998, pos[0] - 0.600, pos[1] - 0.079, pos[2] -0.045 , 0, 0, 0);
 	POOL[POOL_COUNT][BALLS][13] = CreateObject(2999, pos[0] - 0.600, pos[1],         pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][14] = CreateObject(2998, pos[0] - 0.600, pos[1] - 0.079, pos[2] -0.045 , 0, 0, 0);
-	POOL[POOL_COUNT][BALLS][15] = CreateObject(3104, pos[0] - 0.600, pos[1] - 0.157, pos[2] -0.045 , 0, 0, 0);
-
+	POOL[POOL_COUNT][BALLS][14] = CreateObject(3000, pos[0] - 0.600, pos[1] + 0.157, pos[2] -0.045 , 0, 0, 0);
+	POOL[POOL_COUNT][BALLS][15] = CreateObject(3001, pos[0] - 0.525, pos[1] + 0.040, pos[2] -0.045 , 0, 0, 0);
+	
 	POOL[POOL_COUNT][TABLE] = CreateObject(2964, pos[0],         pos[1],         pos[2] -1     , 0, 0, 0);
 
 	format(POOL[POOL_COUNT][TEXT], 100, "pool test");
