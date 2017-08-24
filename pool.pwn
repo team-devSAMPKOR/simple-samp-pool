@@ -35,6 +35,19 @@ public OnPlayerCommandText(playerid, cmdtext[]){
 
 	    return 1;
 	}
+
+	if (strcmp(cmdtext, "/shot", true) == 0){
+
+		new
+		    speed = 2,
+		    Float: angle;
+		    
+		GetPlayerFacingAngle(playerid, angle);
+		
+	    PHY_SetObjectVelocity(POOL[0][BALLS][0], speed * floatsin( -angle, degrees), speed * floatcos( -angle, degrees));
+	    
+	    return 1;
+	}
 	
 	return 0;
 }
@@ -82,6 +95,15 @@ stock createPoolTable(playerid){
 
 	format(POOL[POOL_COUNT][TEXT], 100, "pool test");
 	POOL[POOL_COUNT][LABEL] = Create3DTextLabel(POOL[POOL_COUNT][TEXT], -1, POOL[POOL_COUNT][POS][0], POOL[POOL_COUNT][POS][1], POOL[POOL_COUNT][POS][2], 10.0, 0, 0);
+
+	PHY_CreateArea( pos[0] - 1.000, pos[1] - 0.500, pos[0] + 1.000, pos[1] + 0.500,0.6,FLOAT_NEG_INFINITY);
+
+	for(new i = 0; i < 16; i++){
+	
+		PHY_InitObject( POOL[POOL_COUNT][BALLS][i] , 3003, _, _, PHY_MODE_2D);
+		PHY_SetObjectFriction( POOL[POOL_COUNT][BALLS][i] , 0.08);
+		PHY_RollObject( POOL[POOL_COUNT][BALLS][i] ,1);
+	}
 
 	POOL_COUNT ++;
 }
