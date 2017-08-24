@@ -57,7 +57,41 @@ public OnPlayerConnect(playerid){
 	return 1;
 }
 
-public OnPlayerDisconnect(playerid, reason){
+public PHY_OnObjectUpdate(objectid){
+
+	new
+		poolid = 0;
+	
+	for(new i = 0; i < GetMaxPlayers(); i++){
+		if(	IsInBall(objectid , POOL[poolid][POS][0] + 0.955, POOL[poolid][POS][1] + 0.510, POOL[poolid][POS][2] -0.045,0.10) ||
+			IsInBall(objectid , POOL[poolid][POS][0] + 0.955, POOL[poolid][POS][1] - 0.510, POOL[poolid][POS][2] -0.045,0.10) ||
+
+			IsInBall(objectid , POOL[poolid][POS][0] + 0.000, POOL[poolid][POS][1] + 0.550, POOL[poolid][POS][2] -0.045,0.10) ||
+		    IsInBall(objectid , POOL[poolid][POS][0] + 0.000, POOL[poolid][POS][1] - 0.550, POOL[poolid][POS][2] -0.045,0.10) ||
+
+		    IsInBall(objectid , POOL[poolid][POS][0] - 0.955, POOL[poolid][POS][1] + 0.510, POOL[poolid][POS][2] -0.045,0.10) ||
+		    IsInBall(objectid , POOL[poolid][POS][0] - 0.955, POOL[poolid][POS][1] - 0.510, POOL[poolid][POS][2] -0.045,0.10))
+		{
+			new
+				str[50];
+				
+			if(objectid != 1){ // TODO : TEST
+			
+				format(str ,sizeof(str), " delete object : id %d ", objectid);
+				SendClientMessage(i, -1, str);
+				
+				DestroyObject(objectid);
+				PHY_DeleteObject(objectid);
+			}
+
+		}
+		
+	}
+
+	return 1;
+}
+
+public OnPlayerUpdate(playerid){
 
 	return 1;
 }
@@ -108,6 +142,7 @@ stock createPoolTable(playerid){
 	POOL_COUNT ++;
 }
 
+
 stock GetPlayerFrontPos(playerid,&Float:x,&Float:y,&Float:z,Float:distance=0.0){
 
 	new
@@ -124,4 +159,18 @@ stock GetPlayerFrontPos(playerid,&Float:x,&Float:y,&Float:z,Float:distance=0.0){
 	
 	z = pz;
 	
+}
+
+stock IsInBall(objectid,Float:x,Float:y,Float:z,Float:radius){
+
+    new
+		Float:pos[3],
+		Float:dis;
+		
+    GetObjectPos(objectid, pos[0], pos[1], pos[2]);
+    
+    dis = floatsqroot(floatpower(floatabs(floatsub(x, pos[0] )), 2)+ floatpower(floatabs(floatsub(y, pos[1] )), 2)+ floatpower(floatabs(floatsub(z, pos[2] )), 2));
+    
+    if(dis < radius) return 1;
+    return 0;
 }
